@@ -4,7 +4,7 @@ import { userController } from "./user.controller";
 const router = Router();
 
 
-router.get('/', userController.createAdmin);
+router.post('/', userController.createAdmin);
 
 
 export const userRouter = router;
