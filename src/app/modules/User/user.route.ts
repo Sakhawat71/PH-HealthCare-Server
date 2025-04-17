@@ -1,13 +1,10 @@
 import { Router } from "express";
+import { userController } from "./user.controller";
 
 const router = Router();
 
 
-router.get('/', (req, res) => {
-    res.send({
-        message: 'you hit user router...'
-    })
-});
+router.get('/', userController.createAdmin);
 
 
 export const userRouter = router;
