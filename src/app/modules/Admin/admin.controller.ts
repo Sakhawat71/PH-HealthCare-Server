@@ -5,7 +5,19 @@ import { StatusCodes } from "http-status-codes";
 
 const getAllAdmin = async (req: Request, res: Response) => {
     try {
-        const result = await adminServices.getAllAdmin(req.query);
+
+        const allowedFields = ['name','searchTerm','email','contactNumber'];
+        const filteredQuery : Record<string,any> = {};
+
+        for(const key of allowedFields){
+            if(req.query[key]){
+                filteredQuery[key] = req.query[key]
+            }
+        };
+
+        console.log(filteredQuery);
+
+        const result = await adminServices.getAllAdmin(filteredQuery);
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Admin Data fetched!',
