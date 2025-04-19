@@ -10,10 +10,7 @@ const getAllAdmin = async (req: Request, res: Response) => {
 
         const filteredQuery = pick(req.query, adminAllowedFields);
         const paginateQuery = pick(req.query, paginateAllowedFieds);
-
-        console.log(filteredQuery,paginateQuery);
-
-        const result = await adminServices.getAllAdmin(filteredQuery);
+        const result = await adminServices.getAllAdmin(filteredQuery,paginateQuery);
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Admin Data fetched!',
