@@ -7,7 +7,6 @@ import { adminAllowedFields, paginateAllowedFieds, pick } from "./admin.constant
 
 const getAllAdmin = async (req: Request, res: Response) => {
     try {
-
         const filteredQuery = pick(req.query, adminAllowedFields);
         const paginateQuery = pick(req.query, paginateAllowedFieds);
         const result = await adminServices.getAllAdmin(filteredQuery,paginateQuery);

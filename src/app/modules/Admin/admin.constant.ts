@@ -8,7 +8,9 @@ export const adminAllowedFields = [
 
 export const paginateAllowedFieds = [
     'page',
-    'limit'
+    'limit',
+    'sortBy',
+    'sortOrder'
 ]
 export const adminSearchAbleFields = ['name', 'email'];
 
