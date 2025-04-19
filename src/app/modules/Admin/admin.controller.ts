@@ -13,7 +13,8 @@ const getAllAdmin = async (req: Request, res: Response) => {
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Admin Data fetched!',
-            data: result
+            meta : result?.meta,
+            data: result?.deta
         })
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json({
