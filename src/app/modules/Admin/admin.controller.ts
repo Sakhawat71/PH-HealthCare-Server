@@ -1,21 +1,17 @@
 import { Request, Response } from "express";
 import { adminServices } from "./admin.service";
 import { StatusCodes } from "http-status-codes";
+import { adminAllowedFields, paginateAllowedFieds, pick } from "./admin.constant";
+
 
 
 const getAllAdmin = async (req: Request, res: Response) => {
     try {
 
-        const allowedFields = ['name','searchTerm','email','contactNumber'];
-        const filteredQuery : Record<string,any> = {};
+        const filteredQuery = pick(req.query, adminAllowedFields);
+        const paginateQuery = pick(req.query, paginateAllowedFieds);
 
-        for(const key of allowedFields){
-            if(req.query[key]){
-                filteredQuery[key] = req.query[key]
-            }
-        };
-
-        console.log(filteredQuery);
+        console.log(filteredQuery,paginateQuery);
 
         const result = await adminServices.getAllAdmin(filteredQuery);
         res.status(StatusCodes.OK).json({
