@@ -5,7 +5,7 @@ import { StatusCodes } from "http-status-codes";
 
 const getAllAdmin = async (req: Request, res: Response) => {
     try {
-        const result = await adminServices.getAllAdmin();
+        const result = await adminServices.getAllAdmin(req.query);
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Admin Data fetched!',
