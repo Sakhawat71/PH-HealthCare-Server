@@ -3,52 +3,41 @@ import { adminServices } from "./admin.service";
 import { StatusCodes } from "http-status-codes";
 import { adminAllowedFields, paginateAllowedFieds, pick } from "./admin.constant";
 import { sendResponse } from "../../utils/sendResponse";
+import catchAsync from "../../utils/catchAsync";
 
 
 
-const getAllAdmin = async (req: Request, res: Response, next : NextFunction) => {
-    try {
-        const filteredQuery = pick(req.query, adminAllowedFields);
-        const paginateQuery = pick(req.query, paginateAllowedFieds);
-        const result = await adminServices.getAllAdmin(filteredQuery, paginateQuery);
+const getAllAdmin = catchAsync(async (req: Request, res: Response,) => {
 
-        sendResponse(res,{
-            statusCode: StatusCodes.OK,
-            success: true,
-            message: "Admin Data fetched!",
-            meta: result?.meta,
-            data: result?.deta
-        });
-    } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-            success: false,
-            message: 'Admin Data failed to fatch!',
-            error: error
-        })
-    }
-};
+    const filteredQuery = pick(req.query, adminAllowedFields);
+    const paginateQuery = pick(req.query, paginateAllowedFieds);
+    const result = await adminServices.getAllAdmin(filteredQuery, paginateQuery);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Admin Data fetched!",
+        meta: result?.meta,
+        data: result?.deta
+    });
+
+});
 
 
-const getAdminById = async (req: Request, res: Response, next : NextFunction) => {
+const getAdminById = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
-    try {
-        const result = await adminServices.getAdminByIdFormDB(id as string);
-        res.status(StatusCodes.OK).json({
-            success: true,
-            message: 'Admin Data fetched!',
-            data: result
-        })
-    } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-            success: false,
-            message: 'Admin Data failed to fatch!',
-            error: error
-        })
-    }
-};
+    const result = await adminServices.getAdminByIdFormDB(id as string);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Admin Data fetched!",
+        data: result
+    })
+
+});
 
 
-const updateAdminById = async (req: Request, res: Response, next : NextFunction) => {
+const updateAdminById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     try {
         const result = await adminServices.updateAdminById(id, req.body);
@@ -63,7 +52,7 @@ const updateAdminById = async (req: Request, res: Response, next : NextFunction)
 };
 
 
-const deleteAdmin = async (req: Request, res: Response, next : NextFunction) => {
+const deleteAdmin = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     try {
         const result = await adminServices.deleteAdminById(id);
@@ -83,7 +72,7 @@ const deleteAdmin = async (req: Request, res: Response, next : NextFunction) => 
 
 
 
-const softDeleteAdmin = async (req: Request, res: Response, next : NextFunction) => {
+const softDeleteAdmin = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     try {
         const result = await adminServices.softDeleteAdmin(id);
