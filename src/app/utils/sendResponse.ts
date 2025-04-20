@@ -1,3 +1,4 @@
+import { error } from "console";
 import { Response } from "express";
 
 type TResponse<T> = {
@@ -11,25 +12,19 @@ type TResponse<T> = {
         limit?: number;
         [key: string]: any;
     };
-
+    error? : any;
 };
 
 
 export const sendResponse = <T>(
     res: Response,
-    data: TResponse<T>
+    resInfo: TResponse<T>
 ) => {
-    res.status(data.statusCode).json({
-        success: data.success,
-        message: data.message,
-        meta: data.meta,
-        data: data.data,
+    res.status(resInfo.statusCode).json({
+        success: resInfo.success,
+        message: resInfo.message,
+        meta: resInfo.meta,
+        data: resInfo.data,
+        error: resInfo.error
     })
 }
-
-// sendResponse(res, {
-//     statusCode: StatusCodes.OK,
-//     success: true,
-//     message: 'Admin is retrieved succesfully',
-//     data: result,
-// });

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { adminServices } from "./admin.service";
 import { StatusCodes } from "http-status-codes";
 import { adminAllowedFields, paginateAllowedFieds, pick } from "./admin.constant";
@@ -6,7 +6,7 @@ import { sendResponse } from "../../utils/sendResponse";
 
 
 
-const getAllAdmin = async (req: Request, res: Response) => {
+const getAllAdmin = async (req: Request, res: Response, next : NextFunction) => {
     try {
         const filteredQuery = pick(req.query, adminAllowedFields);
         const paginateQuery = pick(req.query, paginateAllowedFieds);
@@ -18,7 +18,7 @@ const getAllAdmin = async (req: Request, res: Response) => {
             message: "Admin Data fetched!",
             meta: result?.meta,
             data: result?.deta
-        })
+        });
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json({
             success: false,
@@ -29,7 +29,7 @@ const getAllAdmin = async (req: Request, res: Response) => {
 };
 
 
-const getAdminById = async (req: Request, res: Response) => {
+const getAdminById = async (req: Request, res: Response, next : NextFunction) => {
     const { id } = req.params;
     try {
         const result = await adminServices.getAdminByIdFormDB(id as string);
@@ -48,7 +48,7 @@ const getAdminById = async (req: Request, res: Response) => {
 };
 
 
-const updateAdminById = async (req: Request, res: Response) => {
+const updateAdminById = async (req: Request, res: Response, next : NextFunction) => {
     const { id } = req.params;
     try {
         const result = await adminServices.updateAdminById(id, req.body);
@@ -58,16 +58,12 @@ const updateAdminById = async (req: Request, res: Response) => {
             data: result
         });
     } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-            success: false,
-            message: 'Admin Data failed to update!',
-            error: error
-        });
+        next(error)
     }
 };
 
 
-const deleteAdmin = async (req: Request, res: Response) => {
+const deleteAdmin = async (req: Request, res: Response, next : NextFunction) => {
     const { id } = req.params;
     try {
         const result = await adminServices.deleteAdminById(id);
@@ -87,7 +83,7 @@ const deleteAdmin = async (req: Request, res: Response) => {
 
 
 
-const softDeleteAdmin = async (req: Request, res: Response) => {
+const softDeleteAdmin = async (req: Request, res: Response, next : NextFunction) => {
     const { id } = req.params;
     try {
         const result = await adminServices.softDeleteAdmin(id);
