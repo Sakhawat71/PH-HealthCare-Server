@@ -8,7 +8,7 @@ const getAllAdmin = async (params: any, paginateQuery: any) => {
 
     const { searchTerm, ...filterData } = params;
     const andConditions: Prisma.AdminWhereInput[] = [];
-    const { page, limit, sortBy, sortOrder,skip } = paginationHelper.calculatePagination(paginateQuery);
+    const { page, limit, sortBy, sortOrder, skip } = paginationHelper.calculatePagination(paginateQuery);
 
     if (params.searchTerm) {
         andConditions.push({
@@ -35,7 +35,7 @@ const getAllAdmin = async (params: any, paginateQuery: any) => {
     try {
         const result = await prisma.admin.findMany({
             where: whereConditions,
-            skip ,
+            skip,
             take: limit,
             orderBy: sortBy && sortOrder ? {
                 [sortBy]: sortOrder
@@ -49,19 +49,36 @@ const getAllAdmin = async (params: any, paginateQuery: any) => {
         });
 
         return {
-            meta : {
+            meta: {
                 page,
                 limit,
                 total
             },
-            deta : result
+            deta: result
         };
     } catch (error) {
         console.log(error);
     }
 };
 
+
+const getAdminByIdFormDB = async (id : string) => {
+    try {
+        const result = await prisma.admin.findUnique({
+            where : {
+                id
+            }
+        })
+        return result;
+    } catch (error) {
+
+    }
+};
+
+
+
+
 export const adminServices = {
     getAllAdmin,
-
+    getAdminByIdFormDB,
 };

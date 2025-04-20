@@ -9,12 +9,31 @@ const getAllAdmin = async (req: Request, res: Response) => {
     try {
         const filteredQuery = pick(req.query, adminAllowedFields);
         const paginateQuery = pick(req.query, paginateAllowedFieds);
-        const result = await adminServices.getAllAdmin(filteredQuery,paginateQuery);
+        const result = await adminServices.getAllAdmin(filteredQuery, paginateQuery);
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Admin Data fetched!',
-            meta : result?.meta,
+            meta: result?.meta,
             data: result?.deta
+        })
+    } catch (error) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: true,
+            message: 'Admin Data failed to fatch!',
+            error: error
+        })
+    }
+};
+
+
+const getAdminById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+        const result = await adminServices.getAdminByIdFormDB(id as string);
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Admin Data fetched!',
+            data: result
         })
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json({
@@ -27,5 +46,6 @@ const getAllAdmin = async (req: Request, res: Response) => {
 
 export const adminControllers = {
     getAllAdmin,
+    getAdminById,
 
 };
