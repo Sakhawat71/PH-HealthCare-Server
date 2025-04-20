@@ -18,7 +18,7 @@ const getAllAdmin = async (req: Request, res: Response) => {
         })
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json({
-            success: true,
+            success: false,
             message: 'Admin Data failed to fatch!',
             error: error
         })
@@ -37,7 +37,7 @@ const getAdminById = async (req: Request, res: Response) => {
         })
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json({
-            success: true,
+            success: false,
             message: 'Admin Data failed to fatch!',
             error: error
         })
@@ -53,9 +53,32 @@ const updateAdminById = async (req: Request, res: Response) => {
             success: true,
             message: 'Admin Data Updated!',
             data: result
-        })
+        });
     } catch (error) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Admin Data failed to update!',
+            error: error
+        });
+    }
+};
 
+
+const deleteAdmin = async (req: Request, res: Response) => {
+    const {id} = req.params;
+    try {
+        const result = await adminServices.deleteAdminById(id);
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Admin Data Deleted!',
+            data: null
+        })
+    } catch (error: any) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: error?.name || 'Admin Data failed to delete!',
+            error: error
+        })
     }
 };
 
@@ -63,4 +86,5 @@ export const adminControllers = {
     getAllAdmin,
     getAdminById,
     updateAdminById,
+    deleteAdmin,
 };

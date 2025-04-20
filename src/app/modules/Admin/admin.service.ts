@@ -62,23 +62,26 @@ const getAllAdmin = async (params: any, paginateQuery: any) => {
 };
 
 
-const getAdminByIdFormDB = async (id : string) => {
-    try {
-        const result = await prisma.admin.findUnique({
-            where : {
-                id
-            }
-        });
-        return result;
-    } catch (error) {
-        return error
-    }
+const getAdminByIdFormDB = async (id: string) => {
+    const result = await prisma.admin.findUnique({
+        where: {
+            id
+        }
+    });
+    return result;
 };
 
 
-const updateAdminById = async (id : string, data : Partial<Admin>) => {
-    const result = await prisma.admin.update({
+const updateAdminById = async (id: string, data: Partial<Admin>) => {
+
+    await prisma.admin.findUniqueOrThrow({
         where : {
+            id
+        }
+    });
+
+    const result = await prisma.admin.update({
+        where: {
             id
         },
         data
@@ -86,8 +89,36 @@ const updateAdminById = async (id : string, data : Partial<Admin>) => {
     return result;
 };
 
+
+const deleteAdminById = async (id: string) => {
+
+    await prisma.admin.findUniqueOrThrow({
+        where : {
+            id
+        }
+    });
+
+    const result = await prisma.$transaction(async (tClient) => {
+        const adminDeletedData = await tClient.admin.delete({
+            where : {
+                id
+            }
+        });
+
+        const userDelete = await tClient.user.delete({
+            where: {
+                email : adminDeletedData.email
+            }
+        });
+
+        return userDelete;
+    });
+    return result;
+};
+
 export const adminServices = {
     getAllAdmin,
     getAdminByIdFormDB,
     updateAdminById,
+    deleteAdminById,
 };
