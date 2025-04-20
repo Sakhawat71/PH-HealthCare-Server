@@ -3,7 +3,7 @@ import { sendResponse } from "../utils/sendResponse";
 import { StatusCodes } from "http-status-codes";
 
 
-export const globalErrorHandler: ErrorRequestHandler = (
+const globalErrorHandler: ErrorRequestHandler = (
     error,
     req,
     res,
@@ -18,3 +18,5 @@ export const globalErrorHandler: ErrorRequestHandler = (
         error: error
     })
 };
+
+export default globalErrorHandler;
