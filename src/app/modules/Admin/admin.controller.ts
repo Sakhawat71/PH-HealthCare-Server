@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { adminServices } from "./admin.service";
 import { StatusCodes } from "http-status-codes";
 import { adminAllowedFields, paginateAllowedFieds, pick } from "./admin.constant";
+import { sendResponse } from "../../utils/sendResponse";
 
 
 
@@ -10,9 +11,11 @@ const getAllAdmin = async (req: Request, res: Response) => {
         const filteredQuery = pick(req.query, adminAllowedFields);
         const paginateQuery = pick(req.query, paginateAllowedFieds);
         const result = await adminServices.getAllAdmin(filteredQuery, paginateQuery);
-        res.status(StatusCodes.OK).json({
+
+        sendResponse(res,{
+            statusCode: StatusCodes.OK,
             success: true,
-            message: 'Admin Data fetched!',
+            message: "Admin Data fetched!",
             meta: result?.meta,
             data: result?.deta
         })
@@ -65,7 +68,7 @@ const updateAdminById = async (req: Request, res: Response) => {
 
 
 const deleteAdmin = async (req: Request, res: Response) => {
-    const {id} = req.params;
+    const { id } = req.params;
     try {
         const result = await adminServices.deleteAdminById(id);
         res.status(StatusCodes.OK).json({
@@ -85,7 +88,7 @@ const deleteAdmin = async (req: Request, res: Response) => {
 
 
 const softDeleteAdmin = async (req: Request, res: Response) => {
-    const {id} = req.params;
+    const { id } = req.params;
     try {
         const result = await adminServices.softDeleteAdmin(id);
         res.status(StatusCodes.OK).json({
