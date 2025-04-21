@@ -1,6 +1,7 @@
 import prisma from "../../utils/prisma";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import generateToken from "../../utils/createJWTtoken";
 
 
 const loginUser = async (payload: any) => {
@@ -17,29 +18,21 @@ const loginUser = async (payload: any) => {
         throw new Error("password incurrect")
     }
 
-    const accessToken = jwt.sign(
-        {
-            email: userData.email,
-            role: userData.role,
-        },
+    const accessToken = generateToken({
+        email: userData.email,
+        role: userData.role,
+    },
         "verySecret",
-        {
-            algorithm: 'HS256',
-            expiresIn: '5m'
-        }
-    );
+        '5m'
+    )
 
-    const refreshToken = jwt.sign(
-        {
-            email: userData.email,
-            role: userData.role,
-        },
+    const refreshToken = generateToken({
+        email: userData.email,
+        role: userData.role,
+    },
         "verySecret123",
-        {
-            algorithm: 'HS256',
-            expiresIn: '30d'
-        }
-    );
+        '30d'
+    )
 
     return {
         accessToken,
