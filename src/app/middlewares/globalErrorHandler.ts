@@ -13,7 +13,7 @@ const globalErrorHandler: ErrorRequestHandler = (
     sendResponse(res, {
         statusCode: StatusCodes.BAD_REQUEST,
         success: false,
-        message: error.name,
+        message: error.message,
         meta: error.meta,
         error: error
     })
