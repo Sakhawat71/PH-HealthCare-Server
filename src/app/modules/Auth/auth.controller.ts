@@ -6,8 +6,7 @@ import { StatusCodes } from "http-status-codes";
 
 
 const loginUser = catchAsync(async (req: Request , res : Response)=> {
-    const result = await authServices.loginUser();
-
+    const result = await authServices.loginUser(req.body);
     sendResponse(res,{
         statusCode: StatusCodes.OK,
         success: true,

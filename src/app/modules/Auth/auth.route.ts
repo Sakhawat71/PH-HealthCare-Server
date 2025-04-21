@@ -6,7 +6,7 @@ const router = Router();
 
 
 router.post(
-    '/',
+    '/login',
     authControllers.loginUser
 );
 
