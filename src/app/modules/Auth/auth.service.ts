@@ -89,35 +89,44 @@ const changePassword = async (user: JwtPayload, payload: any) => {
         }
     });
 
-
     const isCorrectPassword: boolean = await bcrypt.compare(
         payload.oldPassword,
         userData.password
     );
     if (!isCorrectPassword) {
         throw new AppError(
-            StatusCodes.NOT_FOUND, 
+            StatusCodes.NOT_FOUND,
             "password incurrect"
         );
     };
 
-    const hashedPassword : string = await bcrypt.hash(payload.newPassword,12);
-    const updatePassword = prisma.user.update({
+    const hashedPassword: string = await bcrypt.hash(payload.newPassword, 12);
+    await prisma.user.update({
         where: {
-            email : userData.email,
-            userStatus : "ACTIVE"
+            email: userData.email,
+            userStatus: "ACTIVE"
         },
         data: {
-            password : hashedPassword,
-            needPasswordChange : false,
+            password: hashedPassword,
+            needPasswordChange: false,
         }
     })
 
-    return updatePassword
+    return {
+        message: "Password change Successfully",
+        needPasswordChange: false,
+    }
+};
+
+
+// forgotPassword
+const forgotPassword = async (payload: { email: string }) => {
+    return payload
 };
 
 export const authServices = {
     loginUser,
     refreshToken,
     changePassword,
+    forgotPassword
 };
