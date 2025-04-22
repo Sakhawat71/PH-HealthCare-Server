@@ -8,6 +8,8 @@ import { UserStatus } from "@prisma/client";
 import config from "../../config";
 import AppError from "../../errors/appError";
 import { StatusCodes } from "http-status-codes";
+import emailSerder from "./emailSender";
+import resetPasswordHTML from "../../utils/resetPasswordHTML";
 
 
 const loginUser = async (payload: any) => {
@@ -143,7 +145,11 @@ const forgotPassword = async (payload: { email: string }) => {
     );
 
     const resetPassLink = config.reset_pass_link + `?email=${user.email}&token=${resetPasswordToken}`
-    
+    const html = resetPasswordHTML(resetPassLink);
+    await emailSerder(
+        user.email,
+        html
+    );
     // console.log(resetPassLink);
 
 

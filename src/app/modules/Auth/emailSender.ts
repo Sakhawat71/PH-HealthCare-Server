@@ -1,29 +1,36 @@
 import nodemailer from 'nodemailer';
+import config from '../../config';
 
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for port 465, false for other ports
-    auth: {
-        user: "maddison53@ethereal.email",
-        pass: "jn7jnAPss4f63QBp6D",
-    },
-});
+const emailSerder = async (
+    email: string,
+    html: string
+) => {
 
-// async..await is not allowed in global scope, must use a wrapper
-async function main() {
-    // send mail with defined transport object
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, // true for port 465, false for other ports
+        auth: {
+            user: config.emailSerder.email,
+            pass: config.emailSerder.app_pass,
+        },
+        tls: {
+            rejectUnauthorized: false 
+        }
+    });
+
+
     const info = await transporter.sendMail({
-        from: '"Maddison Foo Koch 👻" <maddison53@ethereal.email>', // sender address
-        to: "bar@example.com, baz@example.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
+        from: '"PH Health Care" <shakhawyat.hs@gmail.com>',
+        to: email,
+        subject: "Reset Password Link",
+        // text: "Hello world?",
+        html,
     });
 
     console.log("Message sent: %s", info.messageId);
-    // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
-}
 
-main().catch(console.error);
+};
+
+export default emailSerder;
