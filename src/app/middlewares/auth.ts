@@ -18,7 +18,7 @@ const auth = (...roles: string[]) => {
             throw new AppError(
                 StatusCodes.UNAUTHORIZED,
                 "You are not Authorized!"
-            )
+            );
         };
 
         const decoded = jwt.verify(
@@ -28,12 +28,16 @@ const auth = (...roles: string[]) => {
         if (!decoded) {
             throw new AppError(
                 StatusCodes.UNAUTHORIZED,
-                'You are not authorized'
-            )
+                'You are not Authorized'
+            );
         };
 
-
-        // console.log(roles);
+        if(roles.length && !roles.includes(decoded.role)){
+            throw new AppError(
+                StatusCodes.UNAUTHORIZED,
+                "You are not Authorized"
+            );
+        };
 
         next();
     })

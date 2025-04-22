@@ -7,8 +7,9 @@ const router = Router();
 
 router.post(
     '/',
-    auth('admin'),
-    userController.createAdmin);
+    auth('ADMIN'),
+    userController.createAdmin
+);
 
 
 export const userRouter = router;
