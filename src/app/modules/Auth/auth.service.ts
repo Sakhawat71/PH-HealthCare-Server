@@ -130,14 +130,24 @@ const forgotPassword = async (payload: { email: string }) => {
     });
     if(!user){
         throw new AppError(StatusCodes.NOT_FOUND,'User Not Found')
-    }
-
-    console.log(user);
+    };
 
 
+    const resetPasswordToken = generateToken(
+        {
+            email : user.email,
+            role : user.role 
+        },
+        config.reset_pass_token as string,
+        config.reset_pass_exp as string
+    );
 
-    console.log(payload);
-    return user
+    const resetPassLink = config.reset_pass_link + `?email=${user.email}&token=${resetPasswordToken}`
+    
+    // console.log(resetPassLink);
+
+
+    return resetPassLink
 };
 
 export const authServices = {
