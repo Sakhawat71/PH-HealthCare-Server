@@ -5,6 +5,7 @@ import generateToken from "../../utils/createJWTtoken";
 import catchAsync from "../../utils/catchAsync";
 import { Request, Response } from "express";
 import { UserStatus } from "@prisma/client";
+import config from "../../config";
 
 
 const loginUser = async (payload: any) => {
@@ -12,7 +13,7 @@ const loginUser = async (payload: any) => {
     const userData = await prisma.user.findUniqueOrThrow({
         where: {
             email: payload.email,
-            userStatus : UserStatus.ACTIVE
+            userStatus: UserStatus.ACTIVE
         }
     });
     const isCorrectPassword: boolean = await bcrypt.compare(payload.password, userData.password);
@@ -24,16 +25,16 @@ const loginUser = async (payload: any) => {
         email: userData.email,
         role: userData.role,
     },
-        "verySecret",
-        '5m'
+        config.jwt_secret as string,
+        config.expiresin as string
     );
 
     const refreshToken = generateToken({
         email: userData.email,
         role: userData.role,
     },
-        "verySecret123",
-        '30d'
+        config.refresh_token_secret as string,
+        config.refresh_expiresin as string
     );
 
     return {
@@ -47,7 +48,10 @@ const loginUser = async (payload: any) => {
 const refreshToken = async (payload: any) => {
     let decodedData;
     try {
-        decodedData = jwt.verify(payload, "verySecret123") as JwtPayload;
+        decodedData = jwt.verify(
+            payload,
+            config.refresh_token_secret as string
+        ) as JwtPayload;
 
     } catch (error) {
         throw new Error("you are not authorize")
@@ -56,7 +60,7 @@ const refreshToken = async (payload: any) => {
     const userData = await prisma.user.findUniqueOrThrow({
         where: {
             email: decodedData?.email,
-            userStatus : 'ACTIVE'
+            userStatus: 'ACTIVE'
         }
     });
 
@@ -64,8 +68,8 @@ const refreshToken = async (payload: any) => {
         email: userData.email,
         role: userData.role,
     },
-        "verySecret123",
-        '5m'
+        config.jwt_secret as string,
+        config.expiresin as string
     );
 
     return {
