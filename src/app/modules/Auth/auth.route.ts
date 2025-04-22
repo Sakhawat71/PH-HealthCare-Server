@@ -31,7 +31,7 @@ router.post(
 router.post(
     '/forgot-password',
     authControllers.forgotPassword
-)
+);
 
 
 export const authRouter = router;

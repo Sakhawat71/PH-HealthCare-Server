@@ -121,7 +121,23 @@ const changePassword = async (user: JwtPayload, payload: any) => {
 
 // forgotPassword
 const forgotPassword = async (payload: { email: string }) => {
-    return payload
+
+    const user = await prisma.user.findUnique({
+        where: {
+            email : payload.email,
+            userStatus : "ACTIVE"
+        }
+    });
+    if(!user){
+        throw new AppError(StatusCodes.NOT_FOUND,'User Not Found')
+    }
+
+    console.log(user);
+
+
+
+    console.log(payload);
+    return user
 };
 
 export const authServices = {
