@@ -6,6 +6,8 @@ import catchAsync from "../../utils/catchAsync";
 import { Request, Response } from "express";
 import { UserStatus } from "@prisma/client";
 import config from "../../config";
+import AppError from "../../errors/appError";
+import { StatusCodes } from "http-status-codes";
 
 
 const loginUser = async (payload: any) => {
@@ -76,10 +78,37 @@ const refreshToken = async (payload: any) => {
         accessToken,
         needPasswordChange: userData.needPasswordChange
     };
+};
 
+
+// reset 
+const changePassword = async (user: JwtPayload, payload: any) => {
+    const userData = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: user.email,
+        }
+    });
+
+
+    const isCorrectPassword: boolean = await bcrypt.compare(
+        payload.oldPassword,
+        userData.password
+    );
+    if (!isCorrectPassword) {
+        throw new AppError(
+            StatusCodes.NOT_FOUND, 
+            "password incurrect"
+        );
+    };
+
+
+    return {
+        isCorrectPassword
+    };
 };
 
 export const authServices = {
     loginUser,
     refreshToken,
+    changePassword,
 };
