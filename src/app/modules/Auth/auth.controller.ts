@@ -46,7 +46,7 @@ const refreshToken = catchAsync(async (
 
 // reset password
 const changePassword = catchAsync(async (
-    req: Request,
+    req: Request & {user?: any},
     res: Response
 ) => {
     const user = req.user;

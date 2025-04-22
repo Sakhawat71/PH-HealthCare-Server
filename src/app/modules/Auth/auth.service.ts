@@ -101,10 +101,19 @@ const changePassword = async (user: JwtPayload, payload: any) => {
         );
     };
 
+    const hashedPassword : string = await bcrypt.hash(payload.newPassword,12);
+    const updatePassword = prisma.user.update({
+        where: {
+            email : userData.email,
+            userStatus : "ACTIVE"
+        },
+        data: {
+            password : hashedPassword,
+            needPasswordChange : false,
+        }
+    })
 
-    return {
-        isCorrectPassword
-    };
+    return updatePassword
 };
 
 export const authServices = {

@@ -8,7 +8,7 @@ import config from '../config';
 
 const auth = (...roles: string[]) => {
     return catchAsync(async (
-        req: Request,
+        req: Request & {user?: any},
         res: Response,
         next: NextFunction
     ) => {
