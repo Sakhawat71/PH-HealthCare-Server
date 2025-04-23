@@ -150,15 +150,18 @@ const forgotPassword = async (payload: { email: string }) => {
         user.email,
         html
     );
-    // console.log(resetPassLink);
-
-
     return resetPassLink
+};
+
+
+const resetPassword = async (payload : any) => {
+    return payload
 };
 
 export const authServices = {
     loginUser,
     refreshToken,
     changePassword,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 };
