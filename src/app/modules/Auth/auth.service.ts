@@ -83,7 +83,7 @@ const refreshToken = async (payload: any) => {
 };
 
 
-// reset 
+// change  
 const changePassword = async (user: JwtPayload, payload: any) => {
     const userData = await prisma.user.findUniqueOrThrow({
         where: {
@@ -131,7 +131,7 @@ const forgotPassword = async (payload: { email: string }) => {
         }
     });
     if (!user) {
-        throw new AppError(StatusCodes.NOT_FOUND, 'User Not Found')
+        throw new AppError(StatusCodes.NOT_FOUND, 'User Not Found!')
     };
 
 
@@ -171,7 +171,7 @@ const resetPassword = async (
     if (!user) {
         throw new AppError(
             StatusCodes.NOT_FOUND,
-            'User Not Found'
+            'User Not Found!'
         )
     };
 
