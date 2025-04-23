@@ -11,7 +11,7 @@ export default {
     refresh_token_secret: process.env.REFREST_TOKEN_SECRET,
     refresh_expiresin: process.env.REFREST_TOKEN_EXPIRES_IN,
     solt_round: process.env.SALTROUNDS,
-    reset_pass_token: process.env.RESET_PASSWORD_TOKEN,
+    reset_pass_secret: process.env.RESET_PASSWORD_SECRET,
     reset_pass_exp: process.env.RESET_PASSWORD_EXPIRE,
     reset_pass_link: process.env.RESET_PASSWORD_LINK,
     emailSerder: {

@@ -1,6 +1,6 @@
 import prisma from "../../utils/prisma";
 import bcrypt from 'bcrypt';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import generateToken from "../../utils/createJWTtoken";
 import catchAsync from "../../utils/catchAsync";
 import { Request, Response } from "express";
@@ -126,21 +126,21 @@ const forgotPassword = async (payload: { email: string }) => {
 
     const user = await prisma.user.findUnique({
         where: {
-            email : payload.email,
-            userStatus : "ACTIVE"
+            email: payload.email,
+            userStatus: "ACTIVE"
         }
     });
-    if(!user){
-        throw new AppError(StatusCodes.NOT_FOUND,'User Not Found')
+    if (!user) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'User Not Found')
     };
 
 
     const resetPasswordToken = generateToken(
         {
-            email : user.email,
-            role : user.role 
+            email: user.email,
+            role: user.role
         },
-        config.reset_pass_token as string,
+        config.reset_pass_secret as string,
         config.reset_pass_exp as string
     );
 
@@ -154,8 +154,59 @@ const forgotPassword = async (payload: { email: string }) => {
 };
 
 
-const resetPassword = async (payload : any) => {
-    return payload
+const resetPassword = async (
+    token: any,
+    payload: {
+        email: string,
+        password: string
+    }
+) => {
+
+    const user = await prisma.user.findUnique({
+        where: {
+            email: payload.email,
+            userStatus: 'ACTIVE'
+        }
+    });
+    if (!user) {
+        throw new AppError(
+            StatusCodes.NOT_FOUND,
+            'User Not Found'
+        )
+    };
+
+    const decoded = jwt.verify(
+        token,
+        config.reset_pass_secret as Secret
+    ) as JwtPayload;
+    if (!decoded) {
+        throw new AppError(
+            StatusCodes.FORBIDDEN,
+            'Invalid or expired token!'
+        )
+    };
+
+    if (decoded.email !== user.email) {
+        throw new AppError(
+            StatusCodes.FORBIDDEN,
+            'Token does not match user email!'
+        )
+    };
+
+    const hashedPassword: string = await bcrypt.hash(payload.password, 12);
+    await prisma.user.update({
+        where: {
+            email: decoded.email,
+            userStatus: "ACTIVE"
+        },
+        data: {
+            password: hashedPassword
+        }
+    });
+
+    return {
+        message: 'Password has been reset successfully.',
+    };
 };
 
 export const authServices = {
