@@ -3,6 +3,7 @@ import path from "path";
 import { v2 as cloudinary } from 'cloudinary';
 import AppError from "../errors/appError";
 import { StatusCodes } from "http-status-codes";
+import fs from "fs";
 
 // Configuration
 cloudinary.config({
@@ -35,6 +36,7 @@ const uploadToCloudinary = async (file: any) => {
                 file.path, {
                 public_id: file.originalname,
             }, (error, result) => {
+                fs.unlinkSync(file.path)
                 if (error) {
                     reject(error)
                 } else {
