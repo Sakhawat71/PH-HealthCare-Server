@@ -18,7 +18,8 @@ const createAdmin = z.object({
         }),
         contactNumber: z.string({
             required_error: "Contact Number is required!"
-        })
+        }),
+        profilePhoto : z.string().optional()
     })
 });
 

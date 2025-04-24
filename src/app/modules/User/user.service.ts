@@ -11,8 +11,8 @@ const createAdminInToDB = async (req: Request) => {
 
     const file = req.file;
     if(file){
-        const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
-        req.body.admin.profilePhoto = uploadToCloudinary?.secure_url;
+        const uploadToCloudinary = await fileUploader.uploadToCloudinary(file) as { secure_url: string };
+        req.body.admin.profilePhoto = uploadToCloudinary.secure_url;
     }
 
     console.log(req.body);
@@ -45,7 +45,7 @@ const createAdminInToDB = async (req: Request) => {
 
         // create admin
         const createAdminData = await tClient.admin.create({
-            data: req.admin
+            data: req.body.admin
         });
 
         return createAdminData;
