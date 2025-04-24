@@ -4,6 +4,13 @@ import { v2 as cloudinary } from 'cloudinary';
 import AppError from "../errors/appError";
 import { StatusCodes } from "http-status-codes";
 
+// Configuration
+cloudinary.config({
+    cloud_name: 'dbgiyghuf',
+    api_key: '815324725584527',
+    api_secret: '871ZSsP0FIaL3W9ZasDTGz8K7_Q'
+});
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -15,38 +22,32 @@ const storage = multer.diskStorage({
     }
 });
 
+// console.log(path.join(process.cwd(), '/uploads'));
 const upload = multer({ storage: storage });
 
 
+const uploadToCloudinary = async (file: any) => {
 
-// Configuration
-cloudinary.config({
-    cloud_name: 'dbgiyghuf',
-    api_key: '815324725584527',
-    api_secret: '<your_api_secret>' // Click 'View API Keys' above to copy your API secret
-});
+    // console.log({ file });
+    return new Promise((resolve, reject) => {
+        cloudinary.uploader
+            .upload(
+                file.path, {
+                public_id: file.originalname,
+            }, (error, result) => {
+                if (error) {
+                    reject(error)
+                } else {
+                    resolve(result)
+                }
+            })
 
-
-const uploadToCloudinary = async (file : any) => {
-    const uploadResult = await cloudinary.uploader
-        .upload(
-            'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg', {
-            public_id: 'shoes',
-        }
-        )
-        .catch((error) => {
-            console.log(error);
-            throw new AppError(
-                StatusCodes.FAILED_DEPENDENCY,
-                "Failed to upload image"
-            )
-        });
-
-    console.log(uploadResult);
+    })
 };
 
 
 
 export const fileUploader = {
-    upload
+    upload,
+    uploadToCloudinary
 };
