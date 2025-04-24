@@ -3,59 +3,55 @@ import bcrypt from 'bcrypt';
 import AppError from "../../errors/appError";
 import { StatusCodes } from "http-status-codes";
 import { fileUploader } from "../../helpers/fileUploader";
+import { Request } from "express";
 
 const prisma = new PrismaClient();
 
-const createAdminInToDB = async (req: any) => {
-
-
-    // console.log(data.file)
-    // console.log(data.body.data);
+const createAdminInToDB = async (req: Request) => {
 
     const file = req.file;
     if(file){
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
         req.body.admin.profilePhoto = uploadToCloudinary?.secure_url;
-        
-        console.log(JSON.parse(req.body.data));
     }
 
-    // const hashedPassword = await bcrypt.hash(data.password, 12);
-    // const userData = {
-    //     email: data.admin.email,
-    //     password: hashedPassword,
-    //     role: UserRole.ADMIN
-    // };
+    console.log(req.body);
 
-    // const isExist = await prisma.user.findUnique({
-    //     where: {
-    //         email: userData.email
-    //     }
-    // });
+    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    const userData = {
+        email: req.body.admin.email,
+        password: hashedPassword,
+        role: UserRole.ADMIN
+    };
 
-    // if (isExist) {
-    //     throw new AppError(
-    //         StatusCodes.CONFLICT,
-    //         'User with this email already exists'
-    //     );
-    // }
+    const isExist = await prisma.user.findUnique({
+        where: {
+            email: userData.email
+        }
+    });
 
-    // const result = await prisma.$transaction(async (tClient) => {
-    //     // create user
-    //     const createUserData = await tClient.user.create({
-    //         data: userData
-    //     });
+    if (isExist) {
+        throw new AppError(
+            StatusCodes.CONFLICT,
+            'User with this email already exists'
+        );
+    }
 
-    //     // create admin
-    //     const createAdminData = await tClient.admin.create({
-    //         data: data.admin
-    //     });
+    const result = await prisma.$transaction(async (tClient) => {
+        // create user
+        const createUserData = await tClient.user.create({
+            data: userData
+        });
 
-    //     return createAdminData;
-    // });
+        // create admin
+        const createAdminData = await tClient.admin.create({
+            data: req.admin
+        });
 
-    // return result;
-    return JSON.parse(req.body.data)
+        return createAdminData;
+    });
+
+    return result;
 };
 
 export const userServices = {
