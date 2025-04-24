@@ -15,8 +15,6 @@ const createAdminInToDB = async (req: Request) => {
         req.body.admin.profilePhoto = uploadToCloudinary.secure_url;
     }
 
-    console.log(req.body);
-
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
     const userData = {
         email: req.body.admin.email,

@@ -9,7 +9,7 @@ const router = Router();
 
 
 router.post(
-    '/',
+    '/create-admin',
     auth(
         UserRole.ADMIN,
         UserRole.SUPER_ADMIN
@@ -20,7 +20,22 @@ router.post(
         req.body = userValidation.createAdmin.parse(JSON.parse(req.body.data))
         return userController.createAdmin(req, res, next)
     },
-    userController.createAdmin
+    // userController.createAdmin
+);
+
+router.post(
+    '/create-doctor',
+    auth(
+        UserRole.ADMIN,
+        UserRole.SUPER_ADMIN
+    ),
+    fileUploader.upload.single('file'),
+
+    (req: Request, res: Response, next: NextFunction) => {
+        req.body = userValidation.createAdmin.parse(JSON.parse(req.body.data))
+        return userController.createAdmin(req, res, next)
+    },
+    // userController.createAdmin
 );
 
 
