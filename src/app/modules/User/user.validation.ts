@@ -55,7 +55,7 @@ const createDoctor = z.object({
         }),
         designation: z.string({
             required_error: "Designation is required!"
-        })
+        }).optional()
     })
 });
 
