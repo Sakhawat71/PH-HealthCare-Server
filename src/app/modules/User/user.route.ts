@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { userController } from "./user.controller";
 import auth from "../../middlewares/auth";
-import { UserRole } from "@prisma/client";
+import { UserData } from "@prisma/client";
 import { fileUploader } from "../../helpers/fileUploader";
 import { userValidation } from "./user.validation";
 
 const router = Router();
-
 
 router.post(
     '/create-admin',
