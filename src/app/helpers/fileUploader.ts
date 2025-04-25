@@ -4,12 +4,13 @@ import { v2 as cloudinary } from 'cloudinary';
 import AppError from "../errors/appError";
 import { StatusCodes } from "http-status-codes";
 import fs from "fs";
+import config from "../config";
 
 // Configuration
 cloudinary.config({
-    cloud_name: 'dbgiyghuf',
-    api_key: '815324725584527',
-    api_secret: '871ZSsP0FIaL3W9ZasDTGz8K7_Q'
+    cloud_name: config.cloudinary.cloud_name,
+    api_key: config.cloudinary.api_key,
+    api_secret: config.cloudinary.api_secret
 });
 
 
