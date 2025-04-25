@@ -97,7 +97,53 @@ const createDoctorIntoDB = async (req: Request) => {
 };
 
 
+const createPatientIntoDB = async (req: Request) => {
+    const file = req.file;
+    if (file) {
+        const uploadToCloudinary = await fileUploader.uploadToCloudinary(file) as { secure_url: string };
+        req.body.doctor.profilePhoto = uploadToCloudinary.secure_url;
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    const userData = {
+        email: req.body.doctor.email,
+        password: hashedPassword,
+        role: UserRole.DOCTOR
+    };
+
+    const isExist = await prisma.user.findUnique({
+        where: {
+            email: userData.email
+        }
+    });
+
+    if (isExist) {
+        throw new AppError(
+            StatusCodes.CONFLICT,
+            'User with this email already exists'
+        );
+    }
+
+    const result = await prisma.$transaction(async (tClient) => {
+        // create user
+        const createUserData = await tClient.user.create({
+            data: userData
+        });
+
+        // create Patient
+        const createPatient = await tClient.patient.create({
+            data: req.body.patient
+        });
+
+        return createPatient;
+    });
+
+    return result;
+};
+
+
 export const userServices = {
     createAdminInToDB,
     createDoctorIntoDB,
+    createPatientIntoDB
 };
