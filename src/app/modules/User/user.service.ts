@@ -1,4 +1,4 @@
-import { PrismaClient, UserRole } from "@prisma/client";
+import { PrismaClient, UserRole, } from "@prisma/client";
 import bcrypt from 'bcrypt';
 import AppError from "../../errors/appError";
 import { StatusCodes } from "http-status-codes";
@@ -51,7 +51,6 @@ const createAdminInToDB = async (req: Request) => {
 
     return result;
 };
-
 
 const createDoctorIntoDB = async (req: Request) => {
     const file = req.file;
