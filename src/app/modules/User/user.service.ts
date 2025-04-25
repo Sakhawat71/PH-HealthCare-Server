@@ -101,14 +101,14 @@ const createPatientIntoDB = async (req: Request) => {
     const file = req.file;
     if (file) {
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file) as { secure_url: string };
-        req.body.doctor.profilePhoto = uploadToCloudinary.secure_url;
+        req.body.patient.profilePhoto = uploadToCloudinary.secure_url;
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
     const userData = {
-        email: req.body.doctor.email,
+        email: req.body.patient.email,
         password: hashedPassword,
-        role: UserRole.DOCTOR
+        role: UserRole.PATIENT
     };
 
     const isExist = await prisma.user.findUnique({
