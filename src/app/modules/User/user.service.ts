@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 const createAdminInToDB = async (req: Request) => {
 
     const file = req.file;
-    if(file){
+    if (file) {
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file) as { secure_url: string };
         req.body.admin.profilePhoto = uploadToCloudinary.secure_url;
     }
@@ -52,6 +52,53 @@ const createAdminInToDB = async (req: Request) => {
     return result;
 };
 
+
+const createDoctorIntoDB = async (req: Request) => {
+    const file = req.file;
+    if (file) {
+        const uploadToCloudinary = await fileUploader.uploadToCloudinary(file) as { secure_url: string };
+        req.body.doctor.profilePhoto = uploadToCloudinary.secure_url;
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    const userData = {
+        email: req.body.doctor.email,
+        password: hashedPassword,
+        role: UserRole.DOCTOR
+    };
+
+    const isExist = await prisma.user.findUnique({
+        where: {
+            email: userData.email
+        }
+    });
+
+    if (isExist) {
+        throw new AppError(
+            StatusCodes.CONFLICT,
+            'User with this email already exists'
+        );
+    }
+
+    const result = await prisma.$transaction(async (tClient) => {
+        // create user
+        const createUserData = await tClient.user.create({
+            data: userData
+        });
+
+        // create doctor
+        const createDoctor = await tClient.doctor.create({
+            data: req.body.doctor
+        });
+
+        return createDoctor;
+    });
+
+    return result;
+};
+
+
 export const userServices = {
     createAdminInToDB,
+    createDoctorIntoDB,
 };

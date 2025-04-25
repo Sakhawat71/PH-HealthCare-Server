@@ -5,18 +5,28 @@ import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
-
     const result = await userServices.createAdminInToDB(req);
-    sendResponse(res,{
-        statusCode : StatusCodes.OK,
-        success : true,
-        message : 'Admin created successfully',
-        data : result
-    })
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Admin created successfully',
+        data: result
+    });
+});
 
+
+const createDoctor = catchAsync(async (req: Request, res: Response) => {
+    const result = await userServices.createDoctorIntoDB(req);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Doctor created successfully',
+        data: result
+    });
 });
 
 
 export const userController = {
     createAdmin,
+    createDoctor,
 };
