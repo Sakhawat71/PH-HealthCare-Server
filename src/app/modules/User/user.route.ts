@@ -7,6 +7,16 @@ import { UserRole } from "@prisma/client";
 
 const router = Router();
 
+
+router.get(
+    '/',
+    auth(
+        UserRole.ADMIN,
+        UserRole.SUPER_ADMIN
+    ),
+    userController.getAllUser
+);
+
 router.post(
     '/create-admin',
     auth(
