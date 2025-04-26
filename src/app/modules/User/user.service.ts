@@ -1,9 +1,11 @@
-import { PrismaClient, UserRole, } from "@prisma/client";
+import { Prisma, PrismaClient, User, UserRole, } from "@prisma/client";
 import bcrypt from 'bcrypt';
 import AppError from "../../errors/appError";
 import { StatusCodes } from "http-status-codes";
 import { fileUploader } from "../../helpers/fileUploader";
 import { Request } from "express";
+import { paginationHelper } from "../../helpers/paginateionHelper";
+import { userSearchAbleFields } from "./user.constant";
 
 const prisma = new PrismaClient();
 
@@ -96,7 +98,6 @@ const createDoctorIntoDB = async (req: Request) => {
     return result;
 };
 
-
 const createPatientIntoDB = async (req: Request) => {
     const file = req.file;
     if (file) {
@@ -141,9 +142,69 @@ const createPatientIntoDB = async (req: Request) => {
     return result;
 };
 
+const getAllUserFromDB = async (params: any, paginateQuery: any) => {
+
+    const { searchTerm, ...filterData } = params;
+    const andConditions: Prisma.UserWhereInput[] = [];
+    const { page, limit, sortBy, sortOrder, skip } = paginationHelper.calculatePagination(paginateQuery);
+
+    if (params.searchTerm) {
+        andConditions.push({
+            OR: userSearchAbleFields.map(field => ({
+                [field]: {
+                    contains: params.searchTerm,
+                    mode: 'insensitive',
+                }
+            }))
+        })
+    };
+
+    if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: filterData[key]
+                }
+            }))
+        })
+    };
+
+
+    const whereConditions: Prisma.UserWhereInput = { AND: andConditions }
+    try {
+        const result = await prisma.user.findMany({
+            where: whereConditions,
+            skip,
+            take: limit,
+            orderBy: sortBy && sortOrder ? {
+                [sortBy]: sortOrder
+            } : {
+                createdAt: 'desc'
+            }
+        });
+
+        const total = await prisma.user.count({
+            where: whereConditions
+        });
+
+        return {
+            meta: {
+                page,
+                limit,
+                total
+            },
+            deta: result
+        };
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 
 export const userServices = {
     createAdminInToDB,
     createDoctorIntoDB,
-    createPatientIntoDB
+    createPatientIntoDB,
+    getAllUserFromDB,
+
 };

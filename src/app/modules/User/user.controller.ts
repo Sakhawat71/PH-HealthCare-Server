@@ -3,6 +3,8 @@ import { userServices } from "./user.service";
 import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
+import { paginateAllowedFieds, pick } from "../Admin/admin.constant";
+import { userFilterableFields } from "./user.constant";
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
     const result = await userServices.createAdminInToDB(req);
@@ -37,8 +39,23 @@ const createPatient = catchAsync(async (req: Request, res: Response) => {
 });
 
 
+const getAllUser = catchAsync(async (req: Request, res: Response,) => {
+
+    const filteredQuery = pick(req.query, userFilterableFields);
+    const paginateQuery = pick(req.query, paginateAllowedFieds);
+    const result = await userServices.getAllUserFromDB(filteredQuery, paginateQuery);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Users Data fetched!",
+        meta: result?.meta,
+        data: result?.deta
+    });
+});
+
 export const userController = {
     createAdmin,
     createDoctor,
-    createPatient
+    createPatient,
+    getAllUser
 };

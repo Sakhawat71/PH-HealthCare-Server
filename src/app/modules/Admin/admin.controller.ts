@@ -12,7 +12,6 @@ const getAllAdmin = catchAsync(async (req: Request, res: Response,) => {
     const filteredQuery = pick(req.query, adminAllowedFields);
     const paginateQuery = pick(req.query, paginateAllowedFieds);
     const result = await adminServices.getAllAdmin(filteredQuery, paginateQuery);
-
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
@@ -20,7 +19,6 @@ const getAllAdmin = catchAsync(async (req: Request, res: Response,) => {
         meta: result?.meta,
         data: result?.deta
     });
-
 });
 
 
