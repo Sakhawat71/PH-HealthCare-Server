@@ -1,3 +1,4 @@
+import { Doctor } from './../../../../generated/prisma/index.d';
 import { NextFunction, Request, Response, Router } from "express";
 import { userController } from "./user.controller";
 import auth from "../../middlewares/auth";
@@ -15,6 +16,17 @@ router.get(
         UserRole.SUPER_ADMIN
     ),
     userController.getAllUser
+);
+
+router.get(
+    '/me',
+    auth(
+        UserRole.ADMIN,
+        UserRole.PATIENT,
+        UserRole.PATIENT,
+        UserRole.SUPER_ADMIN,
+    ),
+    userController.getMyProfile
 );
 
 router.post(

@@ -235,10 +235,16 @@ const updateUserStatus = async (id: string, status: UserRole) => {
     return updateUserStatus;
 };
 
+const getMyProfile = async ( ) => {
+
+};
+
+
 export const userServices = {
     createAdminInToDB,
     createDoctorIntoDB,
     createPatientIntoDB,
     getAllUserFromDB,
-    updateUserStatus
+    updateUserStatus,
+    getMyProfile
 };
