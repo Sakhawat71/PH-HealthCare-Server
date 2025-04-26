@@ -145,8 +145,8 @@ const createPatientIntoDB = async (req: Request) => {
 const getAllUserFromDB = async (params: any, paginateQuery: any) => {
 
     const { searchTerm, ...filterData } = params;
-    const andConditions: Prisma.UserWhereInput[] = [];
     const { page, limit, sortBy, sortOrder, skip } = paginationHelper.calculatePagination(paginateQuery);
+    const andConditions: Prisma.UserWhereInput[] = [];
 
     if (params.searchTerm) {
         andConditions.push({
@@ -180,7 +180,19 @@ const getAllUserFromDB = async (params: any, paginateQuery: any) => {
                 [sortBy]: sortOrder
             } : {
                 createdAt: 'desc'
-            }
+            },
+            select: {
+                id: true,
+                email: true,
+                role: true,
+                needPasswordChange: true,
+                userStatus: true,
+                createdAt: true,
+                updatedAt: true,
+                Admin: true,
+                doctor: true,
+                Patient: true
+            },
         });
 
         const total = await prisma.user.count({
@@ -200,11 +212,33 @@ const getAllUserFromDB = async (params: any, paginateQuery: any) => {
     }
 };
 
+const updateUserStatus = async (id: string, status: UserRole) => {
+    const userData = await prisma.user.findUnique({
+        where: {
+            id
+        }
+    });
+    if (!userData) {
+        throw new AppError(
+            StatusCodes.NOT_FOUND,
+            "User not found"
+        )
+    }
+
+    const updateUserStatus = await prisma.user.update({
+        where: {
+            id
+        },
+        data: status
+    });
+
+    return updateUserStatus;
+};
 
 export const userServices = {
     createAdminInToDB,
     createDoctorIntoDB,
     createPatientIntoDB,
     getAllUserFromDB,
-
+    updateUserStatus
 };

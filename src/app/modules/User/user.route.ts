@@ -45,7 +45,6 @@ router.post(
     },
 );
 
-
 router.post(
     '/create-patient',
     fileUploader.upload.single('file'),
@@ -55,5 +54,13 @@ router.post(
     },
 );
 
+router.patch(
+    '/:id/status',
+    auth(
+        UserRole.ADMIN,
+        UserRole.SUPER_ADMIN
+    ),
+    userController.updateUserStatus
+)
 
 export const userRouter = router;
