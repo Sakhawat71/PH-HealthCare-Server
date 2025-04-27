@@ -6,6 +6,7 @@ import { fileUploader } from "../../helpers/fileUploader";
 import { Request } from "express";
 import { paginationHelper } from "../../helpers/paginateionHelper";
 import { userSearchAbleFields } from "./user.constant";
+import { IAuthUser } from "../../interfaces/common";
 
 const prisma = new PrismaClient();
 
@@ -295,12 +296,13 @@ const getMyProfile = async (user: any) => {
 };
 
 const updateMyProfile = async (
-    user: any,
-    payload: any
+    user: IAuthUser,
+    req: Request
 ) => {
+
     const userInfo = await prisma.user.findUnique({
         where: {
-            email: user.email,
+            email: user?.email,
             userStatus: "ACTIVE"
         },
     });
@@ -309,7 +311,13 @@ const updateMyProfile = async (
             StatusCodes.NOT_FOUND,
             "user not found"
         )
-    }
+    };
+
+    const file = req.file;
+    if (file) {
+        const uploadToCloudinary = await fileUploader.uploadToCloudinary(file) as { secure_url: string };
+        req.body.profilePhoto = uploadToCloudinary?.secure_url;
+    };
 
     let userProfile;
     if (userInfo?.role === "ADMIN") {
@@ -317,7 +325,7 @@ const updateMyProfile = async (
             where: {
                 email: userInfo.email
             },
-            data: payload
+            data: req.body
         })
     }
 
@@ -326,7 +334,7 @@ const updateMyProfile = async (
             where: {
                 email: userInfo.email
             },
-            data: payload
+            data: req.body
         })
     }
 
@@ -335,7 +343,7 @@ const updateMyProfile = async (
             where: {
                 email: userInfo.email
             },
-            data: payload
+            data: req.body
         })
     }
 
@@ -344,11 +352,9 @@ const updateMyProfile = async (
             where: {
                 email: userInfo.email
             },
-            data: payload
+            data: req.body
         })
     }
-
- 
     return { ...userProfile }
 };
 
