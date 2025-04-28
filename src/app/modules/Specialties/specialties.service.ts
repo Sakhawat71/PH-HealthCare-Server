@@ -1,7 +1,8 @@
+import { Request } from "express";
 
 
-const insertIntoDB = async () => {
-    console.log("insert into db");
+const insertIntoDB = async (req: Request) => {
+    return req.body;
 };
 
 

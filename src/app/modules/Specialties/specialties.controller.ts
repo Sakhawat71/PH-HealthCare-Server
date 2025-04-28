@@ -9,11 +9,11 @@ const insertIntoDB = catchAsync(async (
     req: Request,
     res: Response
 ) => {
-    const result = await specialtiesServices.insertIntoDB();
+    const result = await specialtiesServices.insertIntoDB(req);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "insert Into Db!",
+        message: "SpecialtiesRoutes created successfully!",
         data: result
     });
 });
