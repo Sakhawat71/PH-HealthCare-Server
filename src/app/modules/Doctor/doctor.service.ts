@@ -3,7 +3,18 @@ import AppError from "../../errors/appError";
 import prisma from "../../utils/prisma";
 
 const getDoctorsFormDB = async () => {
-    return prisma.doctor.findMany();
+    return prisma.doctor.findMany({
+        where: {
+            isDeleted: false
+        },
+        include: {
+            doctorSpecialties: {
+                include: {
+                    specialties: true
+                }
+            }
+        }
+    });
 };
 
 const getDoctorById = async (id: string) => {
@@ -52,7 +63,7 @@ const deleteDoctor = async (id: string) => {
 
         await transactionClient.user.update({
             where: {
-                email : deleteDoctor.email
+                email: deleteDoctor.email
             },
             data: {
                 userStatus: "DELETED"
@@ -63,27 +74,47 @@ const deleteDoctor = async (id: string) => {
 };
 
 const updateDoctorIntoDB = async (id: string, payload: any) => {
-    const isExist = await prisma.doctor.findUnique({
+    const { specialties, ...doctorData } = payload;
+    console.log("specialties", specialties);
+    const docInfo = await prisma.doctor.findUnique({
         where: {
             id,
             isDeleted: false
         }
     });
-    if (!isExist) {
+    if (!docInfo) {
         throw new AppError(
             StatusCodes.NOT_FOUND,
             'doctor not found!'
         );
     };
 
-    // const updatedDoctor = await prisma.doctor.update({
-    //     where: {
-    //         id
-    //     },
-    //     data : {
-    //         payload
-    //     }
-    // })
+    const result = await prisma.$transaction(async transactionClient => {
+        const updatedDoctor = await transactionClient.doctor.update({
+            where: {
+                id
+            },
+            data: doctorData,
+            include: {
+                doctorSpecialties: {
+                    include: {
+                        specialties: true
+                    }
+                }
+            }
+        });
+
+        for (const specialId of specialties) {
+            const createDoctorSpecialties = await transactionClient.doctorSpecialties.create({
+                data: {
+                    doctorId: docInfo.id,
+                    specialitiesId: specialId
+                }
+            });
+        };
+        return updatedDoctor;
+    });
+    return result;
 };
 
 const softDeleteDoctor = async (id: string) => {

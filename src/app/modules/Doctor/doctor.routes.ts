@@ -16,12 +16,11 @@ router.get(
     doctorControllers.getDoctorById
 );
 
-// router.patch(
-//     '/:id',
-//     auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
-
-
-// );
+router.patch(
+    '/:id',
+    auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+    doctorControllers.updateDoctor
+);
 
 // router.delete(
 //     '/:id',
