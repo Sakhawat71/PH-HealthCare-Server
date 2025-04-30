@@ -29,10 +29,10 @@ router.get(
 
 // );
 
-// router.delete(
-//     '/soft/:id',
-//     auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
-
-// );
+router.delete(
+    '/soft/:id',
+    auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+    doctorControllers.softDeleteDoctorById
+);
 
 export const DoctorRouter = router;
