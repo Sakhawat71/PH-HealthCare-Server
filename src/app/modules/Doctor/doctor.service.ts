@@ -10,12 +10,12 @@ const getDoctorById = async (id: string) => {
     const doctor = await prisma.doctor.findUnique({
         where: {
             id,
-            isDeleted : false
+            isDeleted: false
         },
-        include : {
+        include: {
             doctorSpecialties: {
                 include: {
-                    specialties : true
+                    specialties: true
                 }
             }
         }
@@ -34,7 +34,8 @@ const getDoctorById = async (id: string) => {
 const deleteDoctor = async (id: string) => {
     const isExist = await prisma.doctor.findUnique({
         where: {
-            id
+            id,
+            isDeleted: false
         }
     });
     if (!isExist) {
@@ -44,18 +45,53 @@ const deleteDoctor = async (id: string) => {
         );
     };
 
-    return prisma.doctor.update({
+    return prisma.$transaction(async transactionClient => {
+        const deleteDoctor = await transactionClient.doctor.delete({
+            where: { id }
+        });
+
+        await transactionClient.user.update({
+            where: { id },
+            data: {
+                userStatus: "DELETED"
+            }
+        });
+        return deleteDoctor;
+    });
+};
+
+const updateDoctorIntoDB = async (id: string, payload: any) => {
+    const isExist = await prisma.doctor.findUnique({
         where: {
-            id
-        },
-        data: {
-            isDeleted: true
+            id,
+            isDeleted: false
         }
     });
+    if (!isExist) {
+        throw new AppError(
+            StatusCodes.NOT_FOUND,
+            'doctor not found!'
+        );
+    };
+
+    // const updatedDoctor = await prisma.doctor.update({
+    //     where: {
+    //         id
+    //     },
+    //     data : {
+    //         payload
+    //     }
+    // })
+};
+
+const softDeleteDoctor = async (id: string) => {
+
 };
 
 export const doctorServices = {
     getDoctorsFormDB,
     getDoctorById,
-    deleteDoctor
+    deleteDoctor,
+    updateDoctorIntoDB,
+    softDeleteDoctor,
 };

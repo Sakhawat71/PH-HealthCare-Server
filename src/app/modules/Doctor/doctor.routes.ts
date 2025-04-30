@@ -13,26 +13,26 @@ router.get(
 
 router.get(
     '/:id',
-
+    doctorControllers.getDoctorById
 );
 
-router.patch(
-    '/:id',
-    auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+// router.patch(
+//     '/:id',
+//     auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
 
 
-);
+// );
 
-router.delete(
-    '/:id',
-    auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+// router.delete(
+//     '/:id',
+//     auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
 
-);
+// );
 
-router.delete(
-    '/soft/:id',
-    auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+// router.delete(
+//     '/soft/:id',
+//     auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
 
-);
+// );
 
 export const DoctorRouter = router;
