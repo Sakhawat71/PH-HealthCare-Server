@@ -27,7 +27,7 @@ const getSpecialties = catchAsync(async (req, res) => {
         success: true,
         message: "Specialties get successfully!",
         data: result
-    })
+    });
 });
 
 
@@ -40,8 +40,8 @@ const deleteSpecialties = catchAsync(async (req, res) => {
         success: true,
         message: "Specialties deleted successfully!",
         data: null
-    })
-})
+    });
+});
 
 export const specialtiesController = {
     insertIntoDB,

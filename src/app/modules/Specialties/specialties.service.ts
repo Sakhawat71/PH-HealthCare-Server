@@ -34,7 +34,7 @@ const deleteSpecialtiesFromDB = async (id: string) => {
             id
         },
     });
-}
+};
 
 export const specialtiesServices = {
     insertIntoDB,
