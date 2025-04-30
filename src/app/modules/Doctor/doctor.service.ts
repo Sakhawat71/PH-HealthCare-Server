@@ -9,7 +9,15 @@ const getDoctorsFormDB = async () => {
 const getDoctorById = async (id: string) => {
     const doctor = await prisma.doctor.findUnique({
         where: {
-            id
+            id,
+            isDeleted : false
+        },
+        include : {
+            doctorSpecialties: {
+                include: {
+                    specialties : true
+                }
+            }
         }
     });
 
