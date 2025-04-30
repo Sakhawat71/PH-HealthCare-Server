@@ -11,13 +11,40 @@ const insertIntoDB = catchAsync(async (
 ) => {
     const result = await specialtiesServices.insertIntoDB(req);
     sendResponse(res, {
-        statusCode: StatusCodes.OK,
+        statusCode: StatusCodes.CREATED,
         success: true,
-        message: "SpecialtiesRoutes created successfully!",
+        message: "Specialties created successfully!",
         data: result
     });
 });
 
+
+// get
+const getSpecialties = catchAsync(async (req, res) => {
+    const result = await specialtiesServices.getSpecialties();
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Specialties get successfully!",
+        data: result
+    })
+});
+
+
+// delete
+const deleteSpecialties = catchAsync(async (req, res) => {
+    const id = req.params.id;
+    const result = await specialtiesServices.deleteSpecialtiesFromDB(id);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Specialties deleted successfully!",
+        data: null
+    })
+})
+
 export const specialtiesController = {
     insertIntoDB,
+    getSpecialties,
+    deleteSpecialties
 };

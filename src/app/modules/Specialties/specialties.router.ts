@@ -5,6 +5,12 @@ import { specialtiesValidation } from "./specialties.validation";
 
 const router = Router();
 
+
+router.get(
+    '/',
+    specialtiesController.getSpecialties
+);
+
 router.post(
     '/',
     fileUploader.upload.single('file'),
@@ -13,5 +19,10 @@ router.post(
         return specialtiesController.insertIntoDB(req, res, next)
     }
 );
+
+router.delete(
+    '/:id',
+    specialtiesController.deleteSpecialties
+)
 
 export const SpecialtiesRoutes = router;

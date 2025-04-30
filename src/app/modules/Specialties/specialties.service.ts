@@ -23,6 +23,21 @@ const insertIntoDB = async (req: Request) => {
 };
 
 
+const getSpecialties = async () => {
+    return prisma.specialties.findMany();
+};
+
+
+const deleteSpecialtiesFromDB = async (id: string) => {
+    return prisma.specialties.delete({
+        where: {
+            id
+        },
+    });
+}
+
 export const specialtiesServices = {
     insertIntoDB,
+    getSpecialties,
+    deleteSpecialtiesFromDB
 };
