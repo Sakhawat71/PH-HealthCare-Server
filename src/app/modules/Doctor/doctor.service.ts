@@ -51,7 +51,9 @@ const deleteDoctor = async (id: string) => {
         });
 
         await transactionClient.user.update({
-            where: { id },
+            where: {
+                email : deleteDoctor.email
+            },
             data: {
                 userStatus: "DELETED"
             }
@@ -85,7 +87,39 @@ const updateDoctorIntoDB = async (id: string, payload: any) => {
 };
 
 const softDeleteDoctor = async (id: string) => {
+    const isExist = await prisma.doctor.findUnique({
+        where: {
+            id,
+            isDeleted: false
+        }
+    });
+    if (!isExist) {
+        throw new AppError(
+            StatusCodes.NOT_FOUND,
+            'doctor not found!'
+        );
+    };
 
+    return await prisma.$transaction(async transactionClient => {
+        const deleteDoctor = await transactionClient.doctor.update({
+            where: {
+                id,
+                isDeleted: false
+            },
+            data: {
+                isDeleted: true
+            }
+        });
+
+        await transactionClient.user.update({
+            where: {
+                email: deleteDoctor.email,
+            },
+            data: {
+                userStatus: "DELETED"
+            }
+        })
+    })
 };
 
 export const doctorServices = {
