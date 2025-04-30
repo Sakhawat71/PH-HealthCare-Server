@@ -11,11 +11,6 @@ const insertIntoDB = async (req: Request) => {
         req.body.icon = uploadToCloudinary?.secure_url;
     };
 
-    console.log( {
-        title :  req.body.title,
-        icon : req.body.icon
-    });
-
     const result = await prisma.specialties.create({
         data: {
             title :  req.body.title,
