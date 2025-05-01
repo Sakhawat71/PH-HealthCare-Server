@@ -32,7 +32,7 @@ const getDoctorsFormDB = async (
         andConditions.push({
             doctorSpecialties: {
                 some: {
-                    specialities: {
+                    specialties: {
                         title: {
                             contains: specialties,
                             mode: 'insensitive',
@@ -69,7 +69,7 @@ const getDoctorsFormDB = async (
         include: {
             doctorSpecialties: {
                 include: {
-                    specialities: true
+                    specialties: true
                 }
             }
         },
@@ -147,7 +147,6 @@ const deleteDoctor = async (id: string) => {
 
 const updateDoctorIntoDB = async (id: string, payload: any) => {
     const { specialties, ...doctorData } = payload;
-    console.log("specialties", specialties);
     const docInfo = await prisma.doctor.findUnique({
         where: {
             id,
