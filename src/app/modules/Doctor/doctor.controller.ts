@@ -2,16 +2,20 @@ import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../utils/catchAsync"
 import { sendResponse } from "../../utils/sendResponse";
 import { doctorServices } from "./doctor.service";
+import { pick } from "../Admin/admin.constant";
+import { doctorFilterableFields } from "./doctor.constants";
 
 
 const getAllDoctors = catchAsync(async (req, res) => {
-    const result = await doctorServices.getDoctorsFormDB();
+    const filters = pick(req.query, doctorFilterableFields);
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = await doctorServices.getDoctorsFormDB(filters, options);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Admin Data fetched!",
-        // meta: result?.meta,
-        data: result
+        message: "Doctor Data fetched!",
+        meta: result?.meta,
+        data: result.data
     })
 });
 
