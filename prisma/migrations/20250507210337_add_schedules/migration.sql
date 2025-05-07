@@ -1,3 +1,4 @@
+-- Active: 1746222557834@@127.0.0.1@5432@ph_healthcare@public
 -- CreateTable
 CREATE TABLE "schedules" (
     "id" TEXT NOT NULL,
