@@ -9,7 +9,7 @@ const getAllPatients = catchAsync(async (req, res) => {
     const filters = pick(req.query, patientFilterableFields);
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
-    const result = await patientServices.getAllPatient(filters, options);
+    const result = await patientServices.getAllFromDB(filters, options);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,

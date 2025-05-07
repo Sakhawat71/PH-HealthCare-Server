@@ -4,12 +4,12 @@ import AppError from "../../errors/appError";
 import prisma from "../../utils/prisma";
 import { paginationHelper } from '../../helpers/paginateionHelper';
 import { Prisma } from '@prisma/client';
-import { TPaginationOptions } from '../../interfaces/pagination';
+import { IPaginationOptions } from '../../interfaces/pagination';
 import { doctorSearchableFields } from './doctor.constants';
 
 const getDoctorsFormDB = async (
     filters: IDoctorFilterRequest,
-    options: TPaginationOptions,
+    options: IPaginationOptions,
 ) => {
     const { limit, page, skip } = paginationHelper.calculatePagination(options);
     const { searchTerm, specialties, ...filterData } = filters;

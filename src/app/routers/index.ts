@@ -30,7 +30,7 @@ const routersModule = [
         route: DoctorRouter,
     },
     {
-        path : 'patient',
+        path : '/patient',
         route : patientRoutes
     }
 ];
