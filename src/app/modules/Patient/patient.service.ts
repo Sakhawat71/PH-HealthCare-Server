@@ -1,10 +1,15 @@
 import prisma from "../../utils/prisma";
 
 
-const getAllPatient = async () => {
+const getAllPatient = async (
+    filters : any,
+    options : any
+) => {
+
+
     return await prisma.patient.findMany({
-        where :{
-            isDeleted : false
+        where: {
+            isDeleted: false
         }
     });
 };
