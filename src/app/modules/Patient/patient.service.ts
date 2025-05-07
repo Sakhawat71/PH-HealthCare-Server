@@ -126,8 +126,6 @@ const updateIntoDB = async (
                 create: {
                     ...patientHealthData,
                     patientId: patientInfo.id,
-                    hasAllergies: patientHealthData.hasAllergies ?? false,
-                    hasDiabetes: patientHealthData.hasDiabetes ?? false,
                 }
             });
         };
