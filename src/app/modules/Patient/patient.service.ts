@@ -73,7 +73,6 @@ const getAllFromDB = async (
     };
 };
 
-
 // get by id
 const getByIdFromDB = async (id: string): Promise<Patient | null> => {
     const result = await prisma.patient.findUnique({
@@ -90,7 +89,9 @@ const getByIdFromDB = async (id: string): Promise<Patient | null> => {
 };
 
 // update
+const updateIntoDB = async (id: string, payload: any) => {
 
+}
 
 //delete
 const deleteFromDB = async (id: string): Promise<Patient | null> => {
@@ -155,6 +156,7 @@ const softDelete = async (id: string): Promise<Patient | null> => {
 export const patientServices = {
     getAllFromDB,
     getByIdFromDB,
+    updateIntoDB,
     deleteFromDB,
     softDelete,
 };
