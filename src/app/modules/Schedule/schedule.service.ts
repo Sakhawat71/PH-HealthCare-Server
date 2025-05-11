@@ -52,16 +52,13 @@ const inserIntoDB = async (payload: ISchedules): Promise<Schedule[]> => {
                 });
                 schedules.push(result);
             }
-
-
             startDateTime.setMinutes(startDateTime.getMinutes() + intervaltime);
         }
         currentDate.setDate(currentDate.getDate() + 1)
-
     }
     return schedules;
 };
 
 export const ScheduleServices = {
     inserIntoDB,
-}
+};
