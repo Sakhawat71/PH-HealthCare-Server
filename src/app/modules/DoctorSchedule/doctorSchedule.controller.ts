@@ -5,7 +5,7 @@ import { DoctorScheduleServices } from "./doctorSchedule.service";
 import { StatusCodes } from "http-status-codes";
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
-    const result = await DoctorScheduleServices.insertIntoDB(req.user);
+    const result = await DoctorScheduleServices.insertIntoDB(req);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,

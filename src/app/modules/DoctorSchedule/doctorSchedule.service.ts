@@ -1,11 +1,14 @@
+import { Request } from "express";
 import prisma from "../../utils/prisma";
 
-const insertIntoDB = async (user: any) => {
+const insertIntoDB = async (req: Request) => {
     const doctorData = await prisma.doctor.findUnique({
         where: {
-            email : user.email,
+            email : req.user.email,
         }
     });
+
+    console.log(req.body.scheduleIds);
 
     return doctorData;
 };
