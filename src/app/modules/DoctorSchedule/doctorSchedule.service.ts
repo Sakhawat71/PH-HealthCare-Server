@@ -8,7 +8,7 @@ const insertIntoDB = async (req: Request) => {
         }
     });
 
-    console.log(req.body.scheduleIds);
+    // console.log(req.body.scheduleIds);
 
     return doctorData;
 };
