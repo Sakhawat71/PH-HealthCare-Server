@@ -4,7 +4,7 @@ import prisma from "../../utils/prisma";
 const insertIntoDB = async (
     user: IAuthUser,
     payload: {
-        schduleIds: string[]
+        scheduleIds: string[];
     }
 ) => {
     const doctorData = await prisma.doctor.findUniqueOrThrow({
@@ -13,14 +13,20 @@ const insertIntoDB = async (
         },
     });
 
-    const doctorScheduleData = payload.schduleIds.map(scheduleId => ({
+    // if (!payload.scheduleIds || !Array.isArray(payload.scheduleIds)) {
+    //     throw new Error('scheduleIds must be a valid array');
+    // }
+
+    const doctorScheduleData = payload.scheduleIds.map(scheduleId => ({
         doctorId: doctorData.id,
-            scheduleId
+        scheduleId
     }));
 
-    console.log(doctorScheduleData);
+    const result = await prisma.doctorSchedules.createMany({
+        data : doctorScheduleData
+    })
 
-    return doctorData;
+    return result;
 };
 
 export const DoctorScheduleServices = {
