@@ -1,16 +1,24 @@
-import { Request } from "express";
+import { IAuthUser } from "../../interfaces/common";
 import prisma from "../../utils/prisma";
 
-const insertIntoDB = async (req: Request) => {
+const insertIntoDB = async (
+    user: IAuthUser,
+    payload: {
+        schduleIds: string[]
+    }
+) => {
     const doctorData = await prisma.doctor.findUniqueOrThrow({
         where: {
-            email : req.user.email,
+            email: user.email,
         },
     });
 
-    const doctorScheduleData = await 
+    const doctorScheduleData = payload.schduleIds.map(scheduleId => ({
+        doctorId: doctorData.id,
+            scheduleId
+    }));
 
-    console.log(req.body.scheduleIds);
+    console.log(doctorScheduleData);
 
     return doctorData;
 };

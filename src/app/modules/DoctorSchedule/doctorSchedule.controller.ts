@@ -9,7 +9,8 @@ const insertIntoDB = catchAsync(async (
     req: Request & { user?: IAuthUser },
     res: Response
 ) => {
-    const result = await DoctorScheduleServices.insertIntoDB(req);
+    const user = req.user;
+    const result = await DoctorScheduleServices.insertIntoDB(user!, req.body);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
