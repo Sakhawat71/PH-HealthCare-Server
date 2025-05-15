@@ -4,6 +4,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { DoctorScheduleServices } from "./doctorSchedule.service";
 import { StatusCodes } from "http-status-codes";
 import { IAuthUser } from "../../interfaces/common";
+import { pick } from "../Admin/admin.constant";
 
 const insertIntoDB = catchAsync(async (
     req: Request & { user?: IAuthUser },
@@ -20,7 +21,20 @@ const insertIntoDB = catchAsync(async (
     })
 });
 
+const getAllFromDB = catchAsync(async (req, res) => {
+    const filters = pick(req.query, ['name']);
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = await DoctorScheduleServices.getAllFromDB(filters, options);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Doctors Schedule fetched!",
+        // meta: result?.meta,
+        data: result
+    })
+});
+
 export const DoctorScheduleControllers = {
     insertIntoDB,
-
+    getAllFromDB
 };
