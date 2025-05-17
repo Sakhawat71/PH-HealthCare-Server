@@ -1,3 +1,4 @@
+import { IAuthUser } from './../../interfaces/common';
 import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
@@ -17,8 +18,10 @@ const inserIntoDB = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllFromDB = catchAsync(async (req, res) => {
-    const filters = pick(req.query, ['startDateTime','endDateTime']);
+    const filters = pick(req.query, ['startDate','endDate']);
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+
+    const user = req.user as IAuthUser;
     const result = await ScheduleServices.getAllFromDB(filters, options);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
