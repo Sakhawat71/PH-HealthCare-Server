@@ -34,53 +34,86 @@ const insertIntoDB = async (
 
 const getAllFromDB = async (
     filters: any,
-    options: IPaginationOptions
+    options: IPaginationOptions,
+    user : IAuthUser
 ) => {
 
     const { limit, page, skip } = paginationHelper.calculatePagination(options);
-    const { searchTerm, specialties, ...filterData } = filters;
+    const { startDate, endDate, ...filterData } = filters;
+    console.log(filterData)
 
-    const andConditions: Prisma.DoctorSchedulesWhereInput[] = [];
+    const andConditions = [];
 
-    
-
-    if (specialties && specialties.length > 0) {
-        // Corrected specialties condition
+    if (startDate && endDate) {
         andConditions.push({
-            doctorSpecialties: {
-                some: {
-                    specialties: {
-                        title: {
-                            contains: specialties,
-                            mode: 'insensitive',
-                        },
-                    },
+            AND: [
+                {
+                    schedule: {
+                        startDateTime: {
+                            gte: startDate
+                        }
+                    }
                 },
-            },
+                {
+                    schedule: {
+                        endDateTime: {
+                            lte: endDate
+                        }
+                    }
+                }
+            ]
+        })
+    };
+
+
+    if (Object.keys(filterData).length > 0) {
+
+        if (typeof filterData.isBooked === 'string' && filterData.isBooked === 'true') {
+            filterData.isBooked = true
+        }
+        else if (typeof filterData.isBooked === 'string' && filterData.isBooked === 'false') {
+            filterData.isBooked = false
+        }
+
+        andConditions.push({
+            AND: Object.keys(filterData).map(key => {
+                return {
+                    [key]: {
+                        equals: (filterData as any)[key],
+                    },
+                };
+            }),
         });
     }
 
-    if (Object.keys(filterData).length > 0) {
-        const filterConditions = Object.keys(filterData).map(key => ({
-            [key]: {
-                equals: (filterData as any)[key],
-            },
-        }));
-        andConditions.push(...filterConditions);
-    }
-
-
-    const whereConditions: Prisma.DoctorWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+    const whereConditions: Prisma.DoctorSchedulesWhereInput =
+        andConditions.length > 0 ? { AND: andConditions } : {};
 
 
     const result = await prisma.doctorSchedules.findMany({
-        include: {
-            doctor: true,
-            schedule: true,
-        }
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy:
+            options.sortBy && options.sortOrder
+                ? { [options.sortBy]: options.sortOrder }
+                : {
+
+                }
     });
-    return result;
-}
+    const total = await prisma.doctorSchedules.count({
+        where: whereConditions
+    });
+
+    return {
+        meta: {
+            total,
+            page,
+            limit,
+        },
+        data: result,
+    };
+};
 
 export const DoctorScheduleServices = {
     insertIntoDB,

@@ -22,9 +22,15 @@ const insertIntoDB = catchAsync(async (
 });
 
 const getAllFromDB = catchAsync(async (req, res) => {
-    const filters = pick(req.query, ['name']);
+    const filters = pick(req.query, ['startDate', 'endDate', 'isBooked']);
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-    const result = await DoctorScheduleServices.getAllFromDB(filters, options);
+
+    const user = req.user;
+    const result = await DoctorScheduleServices.getAllFromDB(
+        filters,
+        options,
+        user as IAuthUser
+    );
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
