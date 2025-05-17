@@ -4,6 +4,7 @@ import { Prisma, Schedule } from "@prisma/client";
 import { ISchedules } from "./schedule.interface";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../helpers/paginateionHelper";
+import { IAuthUser } from "../../interfaces/common";
 
 const inserIntoDB = async (payload: ISchedules): Promise<Schedule[]> => {
 
@@ -63,7 +64,8 @@ const inserIntoDB = async (payload: ISchedules): Promise<Schedule[]> => {
 
 const getAllFromDB = async (
     filters: any,
-    options: IPaginationOptions
+    options: IPaginationOptions,
+    user : IAuthUser
 ) => {
 
     const { limit, page, skip } = paginationHelper.calculatePagination(options);

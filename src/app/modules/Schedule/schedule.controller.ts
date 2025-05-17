@@ -18,11 +18,15 @@ const inserIntoDB = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllFromDB = catchAsync(async (req, res) => {
-    const filters = pick(req.query, ['startDate','endDate']);
+    const filters = pick(req.query, ['startDate', 'endDate']);
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
-    const user = req.user as IAuthUser;
-    const result = await ScheduleServices.getAllFromDB(filters, options);
+    const user = req.user;
+    const result = await ScheduleServices.getAllFromDB(
+        filters,
+        options,
+        user as IAuthUser
+    );
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
