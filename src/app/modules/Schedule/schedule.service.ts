@@ -5,6 +5,7 @@ import { IFilterRequest, ISchedules } from "./schedule.interface";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../helpers/paginateionHelper";
 import { IAuthUser } from "../../interfaces/common";
+import AppError from "../../errors/appError";
 
 const inserIntoDB = async (payload: ISchedules): Promise<Schedule[]> => {
 
@@ -161,6 +162,17 @@ const getByIdFromDB = async (id: string): Promise<Schedule | null> => {
 };
 
 const deleteByIdFromDB = async (id: string): Promise<Schedule | null> => {
+
+    const isExist = await prisma.schedule.findUnique({
+        where: {
+            id
+        }
+    });
+
+    if(isExist === null){
+        return null
+    };
+
     const result = await prisma.schedule.delete({
         where: {
             id

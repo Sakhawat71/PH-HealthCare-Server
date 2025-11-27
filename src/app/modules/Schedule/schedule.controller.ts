@@ -36,7 +36,7 @@ const getAllFromDB = catchAsync(async (req, res) => {
     })
 });
 
-const getById = catchAsync(async (req,res) => {
+const getById = catchAsync(async (req, res) => {
     const id = req.params.id;
     const result = await ScheduleServices.getByIdFromDB(id);
 
@@ -48,9 +48,18 @@ const getById = catchAsync(async (req,res) => {
     });
 });
 
-const deleteById = catchAsync(async (req,res) => {
+const deleteById = catchAsync(async (req, res) => {
     const id = req.params.id;
     const result = await ScheduleServices.deleteByIdFromDB(id);
+
+    if (!result) {
+        sendResponse(res, {
+            statusCode: StatusCodes.NOT_FOUND,
+            success: false,
+            message: "Schedule not found by ID!",
+            data: null
+        });
+    }
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
