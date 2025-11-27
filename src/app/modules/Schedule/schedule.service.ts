@@ -153,7 +153,9 @@ const getAllFromDB = async (
 
 const getByIdFromDB = async (id: string): Promise<Schedule | null> => {
     const result = await prisma.schedule.findUnique({
-        where: {id}
+        where: {
+            id
+        }
     })
     return result
 };

@@ -36,7 +36,7 @@ const getAllFromDB = catchAsync(async (req, res) => {
     })
 });
 
-const getByIdFromDB = catchAsync(async (req,res) => {
+const getById = catchAsync(async (req,res) => {
     const id = req.params.id;
     const result = await ScheduleServices.getByIdFromDB(id);
 
@@ -51,5 +51,6 @@ const getByIdFromDB = catchAsync(async (req,res) => {
 
 export const ScheduleControllers = {
     inserIntoDB,
-    getAllFromDB
+    getAllFromDB,
+    getById
 };
