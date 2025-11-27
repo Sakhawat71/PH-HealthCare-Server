@@ -36,6 +36,19 @@ const getAllFromDB = catchAsync(async (req, res) => {
     })
 });
 
+const getByIdFromDB = catchAsync(async (req,res) => {
+    const id = req.params.id;
+    const result = await ScheduleServices.getByIdFromDB(id);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Schedule fetched by ID!",
+        data: result
+    })
+})
+
+
 export const ScheduleControllers = {
     inserIntoDB,
     getAllFromDB
