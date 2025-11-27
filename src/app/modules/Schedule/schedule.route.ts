@@ -16,12 +16,14 @@ router.get(
     '/:id',
     auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.DOCTOR),
     ScheduleControllers.getById
-)
-
+);
 
 router.post(
     '/',
     ScheduleControllers.inserIntoDB
 );
+
+
+
 
 export const ScheduleRouters = router;
